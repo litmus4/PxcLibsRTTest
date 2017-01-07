@@ -305,9 +305,11 @@ std::string HelloWorld::InitRun2()
 
 	ExactTime::Init();
 	strOut = strOut + ref new Platform::String((L"ExactTime: " + StringTools::BasicToWstr(ExactTime::GetSysTick())).c_str());
-	strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(ExactTime::GetTime(ExactTime::ELevel_Second))).c_str());
-	strOut = strOut + ref new Platform::String((L"\n" + StringTools::BasicToWstr(ExactTime::GetTime(ExactTime::ELevel_Milli))).c_str());
-	strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(ExactTime::GetTime(ExactTime::ELevel_Micro))).c_str());
+	strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(ExactTime::GetPerfTime(ExactTime::ELevel_Second))).c_str());
+	strOut = strOut + ref new Platform::String((L"\n" + StringTools::BasicToWstr(ExactTime::GetPerfTime(ExactTime::ELevel_Milli))).c_str());
+	strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(ExactTime::GetPerfTime(ExactTime::ELevel_Micro))).c_str());
+	float fTime = ExactTime::GetFloatTime();//TODO 10000 000 000 0
+	strOut = strOut + ref new Platform::String((L"\n" + StringTools::BasicToWstr(fTime)).c_str());
 	strOut = strOut + "\n";
 	DateTimeInfo info;
 	long long lDateTime = DateTime::GetDateTime();
