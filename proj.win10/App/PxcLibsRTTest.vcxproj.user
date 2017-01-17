@@ -4,4 +4,7 @@
     <DebuggerFlavor>AppHostLocalDebugger</DebuggerFlavor>
     <WindowsAppEmulatorID>AECF762C-BD4C-4B3E-B68C-FC4EBBDFA037;Mobile Emulator 10.0.14393.0 WXGA 4.5 inch 1GB</WindowsAppEmulatorID>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <DebuggerFlavor>WindowsDeviceDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

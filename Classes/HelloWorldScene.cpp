@@ -5,6 +5,7 @@
 #include "PxcUtil/DateTime.h"
 #include "PxcUtil/IniFile.h"
 #include "SingletonTest.h"
+#include "TestClasses.h"
 
 USING_NS_CC;
 
@@ -59,6 +60,7 @@ bool HelloWorld::init()
 
     // add a label shows "Hello World"
     // create and initialize a label
+	scheduleUpdate();
     
 	std::string strJie = InitRun1();
     auto label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
@@ -76,10 +78,26 @@ bool HelloWorld::init()
 	strJie = InitRun2();
 	label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
 	label->setAnchorPoint(Vec2(0, 1));
-	label->setPosition(Vec2(origin.x + 430,
+	label->setPosition(Vec2(origin.x + 350,
 		origin.y + visibleSize.height - 10));
 	label->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(label, 1);
+	//-----------------------------------------------
+	strJie = InitThreadMain();
+	m_pMainThread = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
+	m_pMainThread->setAnchorPoint(Vec2(0, 1));
+	m_pMainThread->setPosition(Vec2(origin.x + 30, origin.y + 300));
+	m_pMainThread->setHorizontalAlignment(TextHAlignment::LEFT);
+	this->addChild(m_pMainThread, 1);
+	m_fMainTime = 0.0f;
+	m_iMainCount = 0;
+	//-----------------------------------------------
+	strJie = InitThreadSub();
+	m_pSubThread = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
+	m_pSubThread->setAnchorPoint(Vec2(0, 1));
+	m_pSubThread->setPosition(Vec2(origin.x + 60, origin.y + 300));
+	m_pSubThread->setHorizontalAlignment(TextHAlignment::LEFT);
+	this->addChild(m_pSubThread, 1);
 	//-----------------------------------------------
 
     // add "HelloWorld" splash screen"
@@ -296,6 +314,8 @@ std::string HelloWorld::InitRun1()
 	CSingleTest::DeleteInstance();
 	CSingleTest2::DeleteInstance();
 
+	strOut = strOut + "\n============\n";
+
 	return StringTools::WstrToStr(strOut->Data());
 }
 
@@ -330,4 +350,44 @@ std::string HelloWorld::InitRun2()
 	}
 
 	return StringTools::WstrToStr(strOut->Data());
+}
+
+std::string HelloWorld::InitThreadMain()
+{
+	return "0";
+}
+
+std::string HelloWorld::InitThreadSub()
+{
+	CSubRun subRun(this);
+	CThread subThread(&subRun);
+	subThread.Start();
+
+	float fTime = ExactTime::GetFloatTime();
+	return StringTools::BasicToStr(fTime);
+}
+
+void HelloWorld::update(float dt)
+{
+	if (m_fMainTime >= -0.5f)
+	{
+		m_fMainTime += dt;
+		if (m_fMainTime >= 1.0f)
+		{
+			if (m_pMainThread)
+			{
+				m_pMainThread->setString(StringTools::BasicToStr(++m_iMainCount));
+			}
+			if (m_iMainCount >= 5)
+				m_fMainTime = -1.0f;
+			else
+				m_fMainTime -= 1.0f;
+		}
+	}
+}
+
+void HelloWorld::TickSubThread()
+{
+	float fTime = ExactTime::GetFloatTime();
+	m_pSubThread->setString(StringTools::BasicToStr(fTime));
 }

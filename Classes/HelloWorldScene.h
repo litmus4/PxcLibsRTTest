@@ -20,6 +20,17 @@ public:
 
 	std::string InitRun1();
 	std::string InitRun2();
+	std::string InitThreadMain();
+	std::string InitThreadSub();
+
+	virtual void update(float dt);
+	void TickSubThread();
+
+private:
+	cocos2d::Label* m_pMainThread;
+	float m_fMainTime;
+	int m_iMainCount;
+	cocos2d::Label* m_pSubThread;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
