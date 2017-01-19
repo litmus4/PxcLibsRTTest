@@ -84,20 +84,20 @@ bool HelloWorld::init()
 	this->addChild(label, 1);
 	//-----------------------------------------------
 	strJie = InitThreadMain();
-	m_pMainThread = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
-	m_pMainThread->setAnchorPoint(Vec2(0, 1));
-	m_pMainThread->setPosition(Vec2(origin.x + 30, origin.y + 300));
-	m_pMainThread->setHorizontalAlignment(TextHAlignment::LEFT);
-	this->addChild(m_pMainThread, 1);
+	m_pMainLabel = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
+	m_pMainLabel->setAnchorPoint(Vec2(0, 1));
+	m_pMainLabel->setPosition(Vec2(origin.x + 30, origin.y + 300));
+	m_pMainLabel->setHorizontalAlignment(TextHAlignment::LEFT);
+	this->addChild(m_pMainLabel, 1);
 	m_fMainTime = 0.0f;
 	m_iMainCount = 0;
 	//-----------------------------------------------
 	strJie = InitThreadSub();
-	m_pSubThread = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
-	m_pSubThread->setAnchorPoint(Vec2(0, 1));
-	m_pSubThread->setPosition(Vec2(origin.x + 60, origin.y + 300));
-	m_pSubThread->setHorizontalAlignment(TextHAlignment::LEFT);
-	this->addChild(m_pSubThread, 1);
+	m_pSubLabel = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
+	m_pSubLabel->setAnchorPoint(Vec2(0, 1));
+	m_pSubLabel->setPosition(Vec2(origin.x + 60, origin.y + 300));
+	m_pSubLabel->setHorizontalAlignment(TextHAlignment::LEFT);
+	this->addChild(m_pSubLabel, 1);
 	//-----------------------------------------------
 
     // add "HelloWorld" splash screen"
@@ -115,6 +115,8 @@ bool HelloWorld::init()
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
+	SAFE_DELETE(m_pSubThread)
+	SAFE_DELETE(m_pSubRun)
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
@@ -359,9 +361,9 @@ std::string HelloWorld::InitThreadMain()
 
 std::string HelloWorld::InitThreadSub()
 {
-	CSubRun subRun(this);
-	CThread subThread(&subRun);
-	subThread.Start();
+	m_pSubRun = new CSubRun(this);
+	m_pSubThread = new PxcUtil::CThread(m_pSubRun);
+	m_pSubThread->Start();
 
 	float fTime = ExactTime::GetFloatTime();
 	return StringTools::BasicToStr(fTime);
@@ -374,9 +376,9 @@ void HelloWorld::update(float dt)
 		m_fMainTime += dt;
 		if (m_fMainTime >= 1.0f)
 		{
-			if (m_pMainThread)
+			if (m_pMainLabel)
 			{
-				m_pMainThread->setString(StringTools::BasicToStr(++m_iMainCount));
+				m_pMainLabel->setString(StringTools::BasicToStr(++m_iMainCount));
 			}
 			if (m_iMainCount >= 5)
 				m_fMainTime = -1.0f;
@@ -389,5 +391,5 @@ void HelloWorld::update(float dt)
 void HelloWorld::TickSubThread()
 {
 	float fTime = ExactTime::GetFloatTime();
-	m_pSubThread->setString(StringTools::BasicToStr(fTime));
+	m_pSubLabel->setString(StringTools::BasicToStr(fTime));
 }

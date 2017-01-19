@@ -3,6 +3,11 @@
 
 #include "cocos2d.h"
 
+class CSubRun;
+namespace PxcUtil
+{
+	class CThread;
+}
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -27,10 +32,12 @@ public:
 	void TickSubThread();
 
 private:
-	cocos2d::Label* m_pMainThread;
+	cocos2d::Label* m_pMainLabel;
 	float m_fMainTime;
 	int m_iMainCount;
-	cocos2d::Label* m_pSubThread;
+	cocos2d::Label* m_pSubLabel;
+	PxcUtil::CThread* m_pSubThread;
+	CSubRun* m_pSubRun;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
