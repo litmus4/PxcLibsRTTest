@@ -4,6 +4,7 @@
 #include "PxcUtil/StringTools.h"
 #include "PxcUtil/DateTime.h"
 #include "PxcUtil/IniFile.h"
+#include "PxcUtil/IDPool.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -98,6 +99,13 @@ bool HelloWorld::init()
 	m_pSubLabel->setPosition(Vec2(origin.x + 60, origin.y + 300));
 	m_pSubLabel->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(m_pSubLabel, 1);
+	//-----------------------------------------------
+	strJie = InitRun3();
+	label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
+	label->setAnchorPoint(Vec2(0, 1));
+	label->setPosition(Vec2(origin.x + 350, origin.y + 185));
+	label->setHorizontalAlignment(TextHAlignment::LEFT);
+	this->addChild(label, 1);
 	//-----------------------------------------------
 
     // add "HelloWorld" splash screen"
@@ -335,7 +343,6 @@ std::string HelloWorld::InitRun2()
 	strOut = strOut + "\n";
 	DateTimeInfo info;
 	long long lDateTime = DateTime::GetDateTime();
-	std::cout << "DateTime: " << lDateTime;
 	strOut = strOut + ref new Platform::String((L"DateTime: " + StringTools::BasicToWstr(lDateTime)).c_str());
 	if (DateTime::InformDateTime(lDateTime, info))
 	{
@@ -362,11 +369,39 @@ std::string HelloWorld::InitThreadMain()
 std::string HelloWorld::InitThreadSub()
 {
 	m_pSubRun = new CSubRun(this);
-	m_pSubThread = new PxcUtil::CThread(m_pSubRun);
+	m_pSubThread = new CThread(m_pSubRun);
 	m_pSubThread->Start();
 
 	float fTime = ExactTime::GetFloatTime();
 	return StringTools::BasicToStr(fTime);
+}
+
+std::string HelloWorld::InitRun3()
+{
+	Platform::String^ strOut = "============\n";
+
+	CIDPool idpool(0, 10, 3);
+	idpool.Declare(3);
+	idpool.Declare(5);
+	idpool.Declare(9);
+	strOut = strOut + "ID Generate : ";//0, 1, 2, 4, 6, 1, 2, 7, 8, 10
+	for (int i = 0; i < 5; ++i)
+	{
+		if (i != 0)
+			strOut = strOut + ", ";
+		strOut = strOut + ref new Platform::String(StringTools::BasicToWstr(idpool.Generate()).c_str());
+	}
+	idpool.Free(1);
+	idpool.Free(2);
+	int iGen = idpool.Generate();
+	while (iGen != 3)
+	{
+		strOut = strOut + ref new Platform::String((L", " + StringTools::BasicToWstr(iGen)).c_str());
+		iGen = idpool.Generate();
+	}
+	strOut = strOut + "\n";
+
+	return StringTools::WstrToStr(strOut->Data());
 }
 
 void HelloWorld::update(float dt)
