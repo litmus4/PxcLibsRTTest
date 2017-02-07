@@ -5,6 +5,7 @@
 #include "PxcUtil/DateTime.h"
 #include "PxcUtil/IniFile.h"
 #include "PxcUtil/IDPool.h"
+#include "PxcUtil/Random.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -400,6 +401,18 @@ std::string HelloWorld::InitRun3()
 		iGen = idpool.Generate();
 	}
 	strOut = strOut + "\n";
+
+	Random::SetReseedCycle(4);
+	strOut = strOut + ref new Platform::String((L"RandomInt : " + StringTools::BasicToWstr(Random::RandInt(-10, 10)) +
+		L", " + StringTools::BasicToWstr(Random::RandInt(0, 65536)) +
+		L", " + StringTools::BasicToWstr(Random::RandInt(0, 65544))).c_str());
+	strOut = strOut + "\n";
+	strOut = strOut + ref new Platform::String((L"RandomFloat : " + StringTools::BasicToWstr(Random::RandFloat(0.1f, 0.5f)) +
+		L", " + StringTools::BasicToWstr(Random::RandFloat(-10.0f, 10.0f)) +
+		L"\n" + StringTools::BasicToWstr(Random::RandFloat(0.1f, 0.5f)) +
+		L", " + StringTools::BasicToWstr(Random::RandFloat(-10.0f, 10.0f)) +
+		L", " + StringTools::BasicToWstr(Random::RandFloat(0.000001f, 0.0000015f)) +
+		L", " + StringTools::BasicToWstr(Random::RandFloat(0.0f, 66666.6f))).c_str());
 
 	return StringTools::WstrToStr(strOut->Data());
 }
