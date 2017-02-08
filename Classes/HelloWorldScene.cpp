@@ -413,6 +413,36 @@ std::string HelloWorld::InitRun3()
 		L", " + StringTools::BasicToWstr(Random::RandFloat(-10.0f, 10.0f)) +
 		L", " + StringTools::BasicToWstr(Random::RandFloat(0.000001f, 0.0000015f)) +
 		L", " + StringTools::BasicToWstr(Random::RandFloat(0.0f, 66666.6f))).c_str());
+	strOut = strOut + "\n";
+	{
+		std::vector<int> vecNormLots;
+		for (int i = 0; i < 10; ++i)
+			vecNormLots.push_back(i);
+		strOut = strOut + "DrawLots : ";
+		strOut = strOut + ref new Platform::String(StringTools::BasicToWstr(Random::DrawLots(vecNormLots)).c_str());
+
+		std::vector<std::pair<int, float>> vecProbLots;
+		vecProbLots.push_back(std::make_pair(0, -1.0f));
+		vecProbLots.push_back(std::make_pair(1, 0.5f));
+		vecProbLots.push_back(std::make_pair(2, 0.5f));
+		vecProbLots.push_back(std::make_pair(3, 0.1f));
+		strOut = strOut + ", ";
+		strOut = strOut + ref new Platform::String(StringTools::BasicToWstr(Random::DrawLots(vecProbLots)).c_str());
+
+		std::vector<int> vecResult;
+		bool bRet = Random::DrawLots(vecNormLots, 3, vecResult);
+		strOut = strOut + ", ";
+		for (int i = 0, iSize = vecResult.size(); i < iSize; ++i)
+			strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(vecResult[i])).c_str());
+
+		vecResult.clear();
+		bRet = Random::DrawLots(vecProbLots, 2, vecResult);
+		strOut = strOut + ", ";
+		for (int i = 0, iSize = vecResult.size(); i < iSize; ++i)
+			strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(vecResult[i])).c_str());
+
+		strOut = strOut + "\n";
+	}
 
 	return StringTools::WstrToStr(strOut->Data());
 }
