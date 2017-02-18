@@ -28,6 +28,7 @@ public:
 	std::string InitThreadMain();
 	std::string InitThreadSub();
 	std::string InitRun3();
+	std::string InitRun4();
 
 	virtual void update(float dt);
 	void TickSubThread();

@@ -6,6 +6,7 @@
 #include "PxcUtil/IniFile.h"
 #include "PxcUtil/IDPool.h"
 #include "PxcUtil/Random.h"
+#include "PxcUtil/LogCenter.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -64,6 +65,7 @@ bool HelloWorld::init()
     // create and initialize a label
 	scheduleUpdate();
     
+	PXCU_LOGINST->Init(1, "logtest.txt");
 	std::string strJie = InitRun1();
     auto label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
     
@@ -80,8 +82,7 @@ bool HelloWorld::init()
 	strJie = InitRun2();
 	label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
 	label->setAnchorPoint(Vec2(0, 1));
-	label->setPosition(Vec2(origin.x + 350,
-		origin.y + visibleSize.height - 10));
+	label->setPosition(Vec2(origin.x + 350, origin.y + visibleSize.height - 10));
 	label->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(label, 1);
 	//-----------------------------------------------
@@ -105,6 +106,13 @@ bool HelloWorld::init()
 	label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
 	label->setAnchorPoint(Vec2(0, 1));
 	label->setPosition(Vec2(origin.x + 350, origin.y + 185));
+	label->setHorizontalAlignment(TextHAlignment::LEFT);
+	this->addChild(label, 1);
+	//-----------------------------------------------
+	strJie = InitRun4();
+	label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
+	label->setAnchorPoint(Vec2(0, 1));
+	label->setPosition(Vec2(origin.x + visibleSize.width - 200, origin.y + visibleSize.height - 10));
 	label->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(label, 1);
 	//-----------------------------------------------
@@ -443,6 +451,21 @@ std::string HelloWorld::InitRun3()
 
 		strOut = strOut + "\n";
 	}
+
+	return StringTools::WstrToStr(strOut->Data());
+}
+
+std::string HelloWorld::InitRun4()
+{
+	Platform::String^ strOut = "============\n";
+
+	PXCU_LOG_DEBUG(1) << "debug";
+	PXCU_LOG(1) << "info";
+	PXCU_LOG_WARNING(1, "warning") << "warning";
+	PXCU_LOG_ASSERT(1, 1 == 1) << "true";
+	PXCU_LOG_ASSERT(1, 1 == 2) << "false";
+	PXCU_LOG_ERROR(1, "error") << "error";
+	PXCU_LOGINST->Release();
 
 	return StringTools::WstrToStr(strOut->Data());
 }
