@@ -97,21 +97,4 @@
       <Filter>Cocos2dEngine</Filter>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="Assets\testdir\1.txt">
-      <Filter>Assets</Filter>
-    </Text>
-    <Text Include="Assets\testdir\aa\recordlist.json">
-      <Filter>Assets</Filter>
-    </Text>
-    <Text Include="Assets\testdir\aa\aa\1-1-1.txt">
-      <Filter>Assets</Filter>
-    </Text>
-    <Text Include="Assets\testdir\bb\2-1.txt">
-      <Filter>Assets</Filter>
-    </Text>
-    <Text Include="Assets\test2.csv">
-      <Filter>Assets</Filter>
-    </Text>
-  </ItemGroup>
 </Project>

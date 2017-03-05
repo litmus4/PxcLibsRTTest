@@ -89,7 +89,7 @@ bool HelloWorld::init()
 	strJie = InitThreadMain();
 	m_pMainLabel = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
 	m_pMainLabel->setAnchorPoint(Vec2(0, 1));
-	m_pMainLabel->setPosition(Vec2(origin.x + 30, origin.y + 300));
+	m_pMainLabel->setPosition(Vec2(origin.x + 30, origin.y + 114));
 	m_pMainLabel->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(m_pMainLabel, 1);
 	m_fMainTime = 0.0f;
@@ -98,7 +98,7 @@ bool HelloWorld::init()
 	strJie = InitThreadSub();
 	m_pSubLabel = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
 	m_pSubLabel->setAnchorPoint(Vec2(0, 1));
-	m_pSubLabel->setPosition(Vec2(origin.x + 60, origin.y + 300));
+	m_pSubLabel->setPosition(Vec2(origin.x + 60, origin.y + 114));
 	m_pSubLabel->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(m_pSubLabel, 1);
 	//-----------------------------------------------
@@ -190,7 +190,9 @@ std::string HelloWorld::InitRun1()
 {
 	Platform::String^ strOut = "============\n";
 
-	std::string strFile = "Assets\\test2.csv";
+	Platform::String^ strInstallPath = Windows::ApplicationModel::Package::Current->InstalledLocation->Path;
+	Platform::String^ strLocalDataPath = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
+	std::string strFile = StringTools::WstrToStr((strInstallPath + "\\Assets\\Resources\\test2.csv")->Data());
 	CCSVTableOperator tabop;
 	if (tabop.Load(strFile.c_str()))
 	{
@@ -233,11 +235,12 @@ std::string HelloWorld::InitRun1()
 		vecZu1Save.push_back(5);
 		tabop.SetArray("Zu1", vecZu1Save);
 		tabop.WriteRow();
-		tabop.Save("Assets\\test3.csv");
+		strFile = StringTools::WstrToStr((strLocalDataPath + "\\test3.csv")->Data());
+		tabop.Save(strFile.c_str());
 
 		strOut = strOut + "\n";
 		tabop.Reset();
-		if (tabop.Load("Assets\\test3.csv"))
+		if (tabop.Load(strFile.c_str()))
 		{
 			while (tabop.ReadRow())
 			{
@@ -278,10 +281,10 @@ std::string HelloWorld::InitRun1()
 			strOut = strOut + "CSV3 Load Fail\n";
 		}
 
-		FileManage::RemoveFile(L"Assets\\test3.csv");
+		FileManage::RemoveFile(StringTools::StrToWstr(strFile).c_str());
 		strOut = strOut + "\n";
 		tabop.Reset();
-		if (!tabop.Load("Assets\\test3.csv"))
+		if (!tabop.Load(strFile.c_str()))
 		{
 			strOut = strOut + "Deleted CSV3 can't be read\n";
 		}
@@ -294,13 +297,17 @@ std::string HelloWorld::InitRun1()
 
 	strOut = strOut + "============\n";
 	std::vector<std::wstring> vecFiles;
-	FileManage::FindFilesRecursive(L"Assets\\testdir", L"txt", vecFiles);
+	FileManage::FindFilesRecursive((strInstallPath + "\\Assets\\Resources\\testdir")->Data(), L"txt", vecFiles);
 	std::vector<std::wstring>::iterator itFile = vecFiles.begin();
 	for (; itFile != vecFiles.end(); itFile++)
 	{
+		int ipos = (*itFile).find(L"Assets");
+		if (ipos != std::wstring::npos)
+			(*itFile) = (*itFile).substr(ipos);
 		strOut = strOut + ref new Platform::String((*itFile + L"\n").c_str());
 	}
-	FILE* pfini = FileManage::OpenFileWithCreate(L"Assets\\testdir2\\testdir2in\\testinifm.ini");
+	strFile = StringTools::WstrToStr((strLocalDataPath + "\\Assets\\Resources\\testdir2\\testdir2in\\testinifm.ini")->Data());
+	FILE* pfini = FileManage::OpenFileWithCreate(StringTools::StrToWstr(strFile).c_str());
 	if (pfini)
 	{
 		strOut = strOut + "\n";
@@ -309,7 +316,7 @@ std::string HelloWorld::InitRun1()
 		fclose(pfini);
 
 		IniFile inifm;
-		if (inifm.Load("Assets\\testdir2\\testdir2in\\testinifm.ini"))
+		if (inifm.Load(strFile.c_str()))
 		{
 			int iValue = 0;
 			inifm.GetValue("section1", "int1", iValue);
@@ -319,11 +326,11 @@ std::string HelloWorld::InitRun1()
 		else
 			strOut = strOut + "testinifm.ini Load Fail\n";
 
-		if (FileManage::RemoveFile(L"Assets\\testdir2\\testdir2in\\testinifm.ini"))
+		if (FileManage::RemoveFile(StringTools::StrToWstr(strFile).c_str()))
 			strOut = strOut + "testdir2\\testdir2in\\testinifm.ini Deleted\n";
-		if (FileManage::RemoveFolder(L"Assets\\testdir2\\testdir2in"))
+		if (FileManage::RemoveFolder((strLocalDataPath + "\\Assets\\Resources\\testdir2\\testdir2in")->Data()))
 			strOut = strOut + "testdir2\\testdir2in Deleted\n";
-		if (FileManage::RemoveFolder(L"Assets\\testdir2"))
+		if (FileManage::RemoveFolder((strLocalDataPath + "\\Assets\\Resources\\testdir2")->Data()))
 			strOut = strOut + "testdir2 Deleted\n";
 	}
 

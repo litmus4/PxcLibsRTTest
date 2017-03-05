@@ -247,17 +247,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Text Include="Assets\testdir\aa\aa\1-1-1.txt" />
-    <Text Include="Assets\testdir\aa\recordlist.json">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-    </Text>
-    <Text Include="Assets\test2.csv">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-    </Text>
     <None Include="PxcLibsRTTest_TemporaryKey.pfx" />
-    <Text Include="Assets\testdir\bb\2-1.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Logo.scale-100.png" />
@@ -309,9 +299,6 @@
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="WindowsMobile, Version=10.0.10240.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Assets\testdir\1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
