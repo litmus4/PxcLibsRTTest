@@ -65,7 +65,8 @@ bool HelloWorld::init()
     // create and initialize a label
 	scheduleUpdate();
     
-	PXCU_LOGINST->Init(1, "logtest.txt");
+	Platform::String^ strLocalDataPath = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
+	PXCU_LOGINST->Init(1, StringTools::WstrToStr((strLocalDataPath + "\\logtest.txt")->Data()).c_str());
 	std::string strJie = InitRun1();
     auto label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
     
