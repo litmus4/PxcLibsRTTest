@@ -475,6 +475,17 @@ std::string HelloWorld::InitRun4()
 	PXCU_LOG_ERROR(1, "error") << "error";
 	PXCU_LOGINST->Release();
 
+	std::string strStrTest = StringTools::Trim(StringTools::Format("  1%d1%.2f\t", 1, 1.222f));
+	float fStrTest = StringTools::StrToBasic<float>(strStrTest);
+	strStrTest = StringTools::BasicToStr(fStrTest);
+	std::cout << strStrTest << std::endl;
+	strOut = strOut + ref new Platform::String((StringTools::StrToWstr(strStrTest) + L" ").c_str());
+	std::wstring wstrStrTest = StringTools::Trim(StringTools::Format(L"  1%d1%.2f\t", 1, 1.222f));
+	fStrTest = StringTools::WstrToBasic<float>(wstrStrTest);
+	wstrStrTest = StringTools::BasicToWstr(fStrTest);
+	strOut = strOut + ref new Platform::String((wstrStrTest + L" ").c_str());
+	strOut = strOut + ref new Platform::String((StringTools::Format(L"", 1, 2) + L"\n").c_str());
+
 	return StringTools::WstrToStr(strOut->Data());
 }
 
