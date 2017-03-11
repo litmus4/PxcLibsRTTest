@@ -7,6 +7,7 @@
 #include "PxcUtil/IDPool.h"
 #include "PxcUtil/Random.h"
 #include "PxcUtil/LogCenter.h"
+#include "PxcUtil/md5.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -113,7 +114,7 @@ bool HelloWorld::init()
 	strJie = InitRun4();
 	label = Label::createWithTTF(strJie, "fonts/Marker Felt.ttf", 24);
 	label->setAnchorPoint(Vec2(0, 1));
-	label->setPosition(Vec2(origin.x + visibleSize.width - 200, origin.y + visibleSize.height - 10));
+	label->setPosition(Vec2(origin.x + visibleSize.width - 350, origin.y + visibleSize.height - 10));
 	label->setHorizontalAlignment(TextHAlignment::LEFT);
 	this->addChild(label, 1);
 	//-----------------------------------------------
@@ -485,6 +486,10 @@ std::string HelloWorld::InitRun4()
 	wstrStrTest = StringTools::BasicToWstr(fStrTest);
 	strOut = strOut + ref new Platform::String((wstrStrTest + L" ").c_str());
 	strOut = strOut + ref new Platform::String((StringTools::Format(L"", 1, 2) + L"\n").c_str());
+
+	CMd5 md5;
+	md5.TargetStr("sb");
+	strOut = strOut + ref new Platform::String((StringTools::StrToWstr(md5.GetDigestKey()) + L"\n").c_str());
 
 	return StringTools::WstrToStr(strOut->Data());
 }
