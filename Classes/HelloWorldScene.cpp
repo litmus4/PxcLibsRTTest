@@ -491,6 +491,21 @@ std::string HelloWorld::InitRun4()
 	md5.TargetStr("sb");
 	strOut = strOut + ref new Platform::String((StringTools::StrToWstr(md5.GetDigestKey()) + L"\n").c_str());
 
+	Platform::String^ strLocalDataPath = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
+	std::string strFile = StringTools::WstrToStr((strLocalDataPath + "\\Assets\\Resources\\testini.ini")->Data());
+	IniFile ini;
+	ini.SetValue("section1", "int1", 1);
+	ini.SetValue("section1", "string1", "test");
+	ini.SetValue("section2", "int2", 2);
+	ini.SetValue("section2", "string2", "test");
+	ini.SetPath(strFile.c_str());
+	ini.Save();
+	ini.ClearAll();
+	ini.Load(strFile.c_str());
+	bool bValue = 0;
+	if (ini.GetValue("section1", "int1", bValue))
+		strOut = strOut + (bValue ? "INI:true\n" : "INI:false\n");
+
 	return StringTools::WstrToStr(strOut->Data());
 }
 
