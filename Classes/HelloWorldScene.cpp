@@ -8,6 +8,7 @@
 #include "PxcUtil/Random.h"
 #include "PxcUtil/LogCenter.h"
 #include "PxcUtil/md5.h"
+#include "tinyxml/tinyxml.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -505,6 +506,39 @@ std::string HelloWorld::InitRun4()
 	bool bValue = 0;
 	if (ini.GetValue("section1", "int1", bValue))
 		strOut = strOut + (bValue ? "INI:true\n" : "INI:false\n");
+
+	strOut = strOut + "============\nXML:";
+	Platform::String^ strInstallPath = Windows::ApplicationModel::Package::Current->InstalledLocation->Path;
+	strFile = StringTools::WstrToStr((strInstallPath + "\\Assets\\Resources\\testxml.xml")->Data());
+	TiXmlDocument doc;
+	if (doc.LoadFile(strFile.c_str()))
+	{
+		TiXmlElement* pRoot = doc.RootElement();
+		if (pRoot)
+		{
+			int iValue = 0;
+			TiXmlElement* pItem = pRoot->FirstChildElement("ItemInt");
+			while (pItem)
+			{
+				pItem->QueryIntAttribute("Value", &iValue);
+				strOut = strOut + ref new Platform::String((L" " + StringTools::BasicToWstr(iValue)).c_str());
+				pItem = pItem->NextSiblingElement("ItemInt");
+			}
+			pItem = pRoot->FirstChildElement("ItemStr");
+			while (pItem)
+			{
+				std::string strValue = pItem->Attribute("Value");
+				strOut = strOut + ref new Platform::String((L" " + StringTools::StrToWstr(strValue)).c_str());
+				pItem = pItem->NextSiblingElement("ItemStr");
+			}
+			TiXmlElement eleNew("ItemInt");
+			eleNew.SetAttribute("Value", iValue + 1);
+			pRoot->InsertEndChild(eleNew);
+			strFile = StringTools::WstrToStr((strLocalDataPath + "\\Assets\\Resources\\testxml2.xml")->Data());
+			doc.SaveFile(strFile.c_str());
+		}
+	}
+	strOut = strOut + "\n";
 
 	return StringTools::WstrToStr(strOut->Data());
 }
