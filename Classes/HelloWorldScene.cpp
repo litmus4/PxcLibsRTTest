@@ -9,6 +9,7 @@
 #include "PxcUtil/LogCenter.h"
 #include "PxcUtil/md5.h"
 #include "tinyxml/tinyxml.h"
+#include "PxcUtil/zPackEx.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -534,8 +535,35 @@ std::string HelloWorld::InitRun4()
 			TiXmlElement eleNew("ItemInt");
 			eleNew.SetAttribute("Value", iValue + 1);
 			pRoot->InsertEndChild(eleNew);
-			strFile = StringTools::WstrToStr((strLocalDataPath + "\\Assets\\Resources\\testxml2.xml")->Data());
+			strFile = StringTools::WstrToStr((strLocalDataPath + "\\testxml2.xml")->Data());
 			doc.SaveFile(strFile.c_str());
+		}
+	}
+	strOut = strOut + "\n";
+
+	strOut = strOut + "============\nUwpPath:";
+	PxcUtil::zPackAddPathAim("ms-appx:///Assets\\Resources", "testdir");
+	std::string strPath = "testdir\\1.txt";
+	PxcUtil::zPackCombinePath(strPath);
+	if (FileManage::IsFileExist(StringTools::StrToWstr(strPath).c_str()))
+		strOut = strOut + "true ";
+	else
+		strOut = strOut + "false ";
+	strPath = "testxml2.xml";
+	PxcUtil::zPackCombinePath(strPath);
+	doc.Clear();
+	if (doc.LoadFile(strPath.c_str()))
+	{
+		TiXmlElement* pRoot = doc.RootElement();
+		if (pRoot)
+		{
+			int iValue = 0;
+			TiXmlElement* pItem = dynamic_cast<TiXmlElement*>(pRoot->LastChild("ItemInt"));
+			if (pItem)
+			{
+				pItem->QueryIntAttribute("Value", &iValue);
+				strOut = strOut + ref new Platform::String(StringTools::BasicToWstr(iValue).c_str());
+			}
 		}
 	}
 	strOut = strOut + "\n";
