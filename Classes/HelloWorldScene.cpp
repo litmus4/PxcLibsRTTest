@@ -568,6 +568,18 @@ std::string HelloWorld::InitRun4()
 	}
 	strOut = strOut + "\n";
 
+	strOut = strOut + "============\n";
+	CDali::SetString(&strOut);
+	CDali dali;
+	tDaliGate::FuncObjSta funcObjSta(&CDali::StaFunc);
+	tDaliGate::FuncObjDyn<CDali> funcObjDyn(&CDali::DynFunc, &dali);
+	tDaliGate daliGate;
+	daliGate.Register(&funcObjSta);
+	daliGate.Register(&funcObjDyn);
+	strOut = strOut + (daliGate(1) ? L"EventReturn : true\n" : L"EventReturn : false\n");
+	daliGate.UnRegister(&funcObjDyn);
+	strOut = strOut + (daliGate(2) ? L"EventReturn : true\n" : L"EventReturn : false\n");
+
 	return StringTools::WstrToStr(strOut->Data());
 }
 
