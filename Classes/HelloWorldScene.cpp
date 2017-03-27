@@ -10,6 +10,7 @@
 #include "PxcUtil/md5.h"
 #include "tinyxml/tinyxml.h"
 #include "PxcUtil/zPackEx.h"
+#include "PxcUtil/StateMachine.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 
@@ -579,6 +580,54 @@ std::string HelloWorld::InitRun4()
 	strOut = strOut + (daliGate(1) ? L"EventReturn : true\n" : L"EventReturn : false\n");
 	daliGate.UnRegister(&funcObjDyn);
 	strOut = strOut + (daliGate(2) ? L"EventReturn : true\n" : L"EventReturn : false\n");
+
+	strOut = strOut + "============\n";
+	std::vector<std::string> vecStrs;
+	vecStrs.push_back("A");
+	vecStrs.push_back("B");
+	vecStrs.push_back("C");
+	CStateMachine<std::string, int> fsm;
+	std::vector<std::string>::iterator iter = vecStrs.begin();
+	for (; iter != vecStrs.end(); iter++)
+	{
+		fsm.AddState(&(*iter));
+	}
+	iter = vecStrs.begin();
+	int i = 0;
+	for (; iter != vecStrs.end(); iter++)
+	{
+		std::vector<std::string>::iterator iter2 = iter + 1;
+		if (iter2 == vecStrs.end())
+			iter2 = vecStrs.begin();
+		fsm.AddTransfer(&(*iter), i, &(*iter2));
+		i++;
+	}
+	if (fsm.SetState(&vecStrs[0], true))
+	{
+		strOut = strOut + ref new Platform::String((L"Init OK, Current State : " +
+			StringTools::StrToWstr(*fsm.GetCurrentState()) + L"\n").c_str());
+	}
+	if (fsm.SetState(&vecStrs[1]))
+	{
+		strOut = strOut + ref new Platform::String((L"Set OK, Current State : " +
+			StringTools::StrToWstr(*fsm.GetCurrentState()) + L"\n").c_str());
+	}
+	if (!fsm.SetState(&vecStrs[0]))
+	{
+		strOut = strOut + ref new Platform::String((L"Set Fail, Current State : " +
+			StringTools::StrToWstr(*fsm.GetCurrentState()) + L"\n").c_str());
+	}
+	if (fsm.TriggerEvent(1))
+	{
+		strOut = strOut + ref new Platform::String((L"Transfer Ok, Current State : " +
+			StringTools::StrToWstr(*fsm.GetCurrentState()) + L"\n").c_str());
+	}
+	if (!fsm.TriggerEvent(1))
+	{
+		strOut = strOut + ref new Platform::String((L"Transfer Fail, Current State : " +
+			StringTools::StrToWstr(*fsm.GetCurrentState()) + L"\n").c_str());
+	}
+	fsm.Clear();
 
 	return StringTools::WstrToStr(strOut->Data());
 }
